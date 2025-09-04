@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamePlus Robux - Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/heroicons@2.1.1/24/outline/index.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #F3F4F6;
+        }
+        .form-input { background-color: #374151; border: 1px solid #4B5563; color: #F3F4F6; border-radius: 0.5rem; padding: 0.75rem 1rem; width: 100%; transition: border-color 0.2s, box-shadow 0.2s; }
+        .form-input:focus { outline: none; border-color: #FBBF24; box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3); }
+        .cta-button { background-color: #FBBF24; color: #111827; font-weight: 700; padding: 0.875rem 1.5rem; border-radius: 0.5rem; text-align: center; width: 100%; transition: background-color 0.2s, transform 0.1s; }
+        .cta-button:hover { background-color: #F59E0B; transform: scale(1.02); }
+        .payment-tab { cursor: pointer; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid #4B5563; background-color: #374151; transition: all 0.2s; flex-grow: 1; text-align: center; }
+        .payment-tab.active { background-color: #FBBF24; color: #111827; font-weight: 600; border-color: #FBBF24; }
+        .bg-logo-blur {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.13;
+            filter: blur(4px) saturate(1.2);
+            background: none;
+        }
+        .bg-logo-blur img {
+            max-width: 70vw;
+            max-height: 80vh;
+            min-width: 400px;
+            min-height: 300px;
+            object-fit: contain;
+            user-select: none;
+            filter: none !important;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="bg-logo-blur">
+        <img src="logo.png" alt="Logo marca d'água">
+    </div>
+    <div class="container mx-auto px-4 py-8 sm:py-12 lg:py-16 max-w-5xl">
+        <header class="text-center mb-10">
+            <a href="#" class="inline-block mb-4 text-2xl font-bold text-yellow-400">GamePlus Robux</a>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">Finalize sua Compra</h1>
+            <p class="mt-2 text-lg text-gray-400">Estamos quase lá! Complete os passos abaixo para receber seus Robux.</p>
+        </header>
+        <main class="grid lg:grid-cols-5 gap-8 lg:gap-12">
+            <div class="lg:col-span-3 space-y-8">
+                <section class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        <span class="bg-yellow-400 text-gray-900 rounded-full h-8 w-8 flex items-center justify-center font-bold mr-3">1</span>
+                        Seu E-mail para Receber o Código
+                    </h2>
+                    <label for="email" class="block text-sm font-medium text-gray-300 mb-1">E-mail</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="Ex: seuemail@email.com">
+                    <label for="player-id" class="block text-sm font-medium text-gray-300 mt-4 mb-1">ID do Jogador (Nickname/ID)</label>
+                    <input type="text" id="player-id" name="player-id" class="form-input" placeholder="Ex: Player123 ou ID numérico">
+                    <p class="mt-2 text-xs text-gray-500">Atenção: O código de ativação será enviado para este e-mail. Verifique se está correto para evitar problemas na entrega.</p>
+                </section>
+                <section class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                    <h2 class="text-xl font-semibold mb-5 flex items-center">
+                        <span class="bg-yellow-400 text-gray-900 rounded-full h-8 w-8 flex items-center justify-center font-bold mr-3">2</span>
+                        Escolha o Método de Pagamento
+                    </h2>
+                    <div class="flex space-x-2 mb-6">
+                        <div id="tab-pix" class="payment-tab active" onclick="showPayment('pix')">Pix</div>
+                        <div id="tab-card" class="payment-tab" onclick="showPayment('card')">Cartão</div>
+                        <div id="tab-boleto" class="payment-tab" onclick="showPayment('boleto')">Boleto</div>
+                    </div>
+                    <div id="content-pix" class="payment-content">
+                        <p class="text-center text-gray-300 mb-4">Pague com Pix para aprovação instantânea!</p>
+                        <div class="bg-white p-4 rounded-lg max-w-xs mx-auto">
+                            <img id="pix-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&amp;data=00020101021126580014br.gov.bcb.pix01364bf90c6b-8d90-4de2-aa36-bc7d83992a745204000053039865802BR5919ANTONIO%20M%20S%20DE%20MELO6006PALMAS62070503%2A%2A%2A63045D1B" onerror="this.onerror=null;this.src='https://quickchart.io/qr?size=256&text=00020101021126580014br.gov.bcb.pix01364bf90c6b-8d90-4de2-aa36-bc7d83992a745204000053039865802BR5919ANTONIO%20M%20S%20DE%20MELO6006PALMAS62070503%2A%2A%2A63045D1B';" alt="QR Code Pix" class="mx-auto rounded-md">
+                        </div>
+                        <div class="mt-4 text-center">
+                            <p class="text-sm text-gray-300 mb-2">Um novo Pix será gerado em:</p>
+                            <div id="pix-timer" class="text-3xl font-bold text-yellow-400 tracking-widest bg-gray-900 inline-block px-4 py-2 rounded-lg border border-yellow-400 shadow-lg">05:00</div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <label for="pix-code" class="block text-sm font-medium text-gray-300 mb-1">Ou copie o código (Pix Copia e Cola):</label>
+                            <div class="relative">
+                                <input type="text" id="pix-code" class="form-input text-center text-xs pr-10" value="00020101021126580014br.gov.bcb.pix01364bf90c6b-8d90-4de2-aa36-bc7d83992a745204000053039865802BR5919ANTONIO M S DE MELO6006PALMAS62070503***63045D1B" readonly>
+                                <button class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-yellow-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-3">Insira o valor correspondente ao seu pacote, confirme o pagamento e aguarde até 2 minutos para o envio do seu código de resgate por e-mail.</p>
+                        </div>
+                    </div>
+                    <div id="content-card" class="payment-content hidden space-y-4">
+                        <div>
+                            <label for="card-number" class="block text-sm font-medium text-gray-300 mb-1">Número do Cartão</label>
+                            <input type="text" id="card-number" class="form-input" placeholder="0000 0000 0000 0000">
+                        </div>
+                        <div>
+                            <label for="card-name" class="block text-sm font-medium text-gray-300 mb-1">Nome no Cartão</label>
+                            <input type="text" id="card-name" class="form-input" placeholder="Como aparece no cartão">
+                        </div>
+                        <div class="flex space-x-4">
+                            <div class="w-1/2">
+                                <label for="card-expiry" class="block text-sm font-medium text-gray-300 mb-1">Validade</label>
+                                <input type="text" id="card-expiry" class="form-input" placeholder="MM/AA">
+                            </div>
+                            <div class="w-1/2">
+                                <label for="card-cvv" class="block text-sm font-medium text-gray-300 mb-1">CVV</label>
+                                <input type="text" id="card-cvv" class="form-input" placeholder="123">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="content-boleto" class="payment-content hidden text-center">
+                        <p class="text-gray-300">O boleto será gerado após a confirmação do pedido e enviado para o seu e-mail.</p>
+                        <p class="text-sm text-gray-500 mt-2">A aprovação pode levar até 2 dias úteis.</p>
+                    </div>
+                </section>
+            </div>
+            <div class="lg:col-span-2">
+                <div class="bg-gray-800 p-6 rounded-xl shadow-lg sticky top-8">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-4">Resumo do Pedido</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <img src="https://placehold.co/64x64/FBBF24/111827?text=R$" alt="Pacote de Robux" class="w-16 h-16 rounded-lg mr-4">
+                                <div>
+                                    <p class="font-semibold">Pacote de 24.000 Robux</p>
+                                    <p class="text-sm text-gray-400">Entrega via e-mail</p>
+                                </div>
+                            </div>
+                            <p class="font-semibold">R$ 799,99</p>
+                        </div>
+                        <div class="border-t border-gray-700"></div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-gray-300">
+                                <span>Subtotal</span>
+                                <span>R$ 799,99</span>
+                            </div>
+                            <div class="flex justify-between text-gray-300">
+                                <span>Taxas</span>
+                                <span>R$ 0,00</span>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-700"></div>
+                        <div class="flex justify-between items-center text-xl font-bold">
+                            <span>Total</span>
+                            <span class="text-yellow-400">R$ 799,99</span>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button class="cta-button" id="finalizar-compra-btn" disabled style="opacity:0.6;cursor:not-allowed;">
+                            Finalizar Compra
+                        </button>
+                    </div>
+                    <div class="mt-6 text-center text-xs text-gray-500 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                        </svg>
+                        Ambiente 100% Seguro
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        const tabs = document.querySelectorAll('.payment-tab');
+        const contents = document.querySelectorAll('.payment-content');
+        function showPayment(method) {
+            contents.forEach(content => {
+                content.classList.add('hidden');
+            });
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById('content-' + method).classList.remove('hidden');
+            document.getElementById('tab-' + method).classList.add('active');
+        }
+        const cardNumberInput = document.getElementById('card-number');
+        const cardExpiryInput = document.getElementById('card-expiry');
+        const cardCvvInput = document.getElementById('card-cvv');
+        if(cardNumberInput) cardNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            e.target.value = value.slice(0, 19);
+        });
+        if(cardExpiryInput) cardExpiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2);
+            }
+            e.target.value = value.slice(0, 5);
+        });
+        if(cardCvvInput) cardCvvInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            e.target.value = value.slice(0, 4);
+        });
+
+        // Sistema de bloqueio de 10 minutos para o botão de finalizar compra
+        (function() {
+            const finalizarBtn = document.getElementById('finalizar-compra-btn');
+            const emailInput = document.getElementById('email');
+            
+            // Verifica se há um bloqueio ativo no localStorage
+            const bloqueioKey = 'checkout_bloqueio_' + window.location.pathname;
+            const bloqueioData = localStorage.getItem(bloqueioKey);
+            
+            if (bloqueioData) {
+                const { timestamp, duracao } = JSON.parse(bloqueioData);
+                const agora = Date.now();
+                const tempoRestante = (timestamp + duracao) - agora;
+                
+                if (tempoRestante > 0) {
+                    // Ainda está bloqueado
+                    finalizarBtn.disabled = true;
+                    finalizarBtn.style.opacity = 0.6;
+                    finalizarBtn.style.cursor = 'not-allowed';
+                    
+                    // Remove o bloqueio quando o tempo expirar
+                    setTimeout(() => {
+                        finalizarBtn.disabled = false;
+                        finalizarBtn.style.opacity = 1;
+                        finalizarBtn.style.cursor = 'pointer';
+                        localStorage.removeItem(bloqueioKey);
+                        
+                        // Revalida o email após desbloquear
+                        const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+                        if (emailValido) {
+                            finalizarBtn.disabled = false;
+                            finalizarBtn.style.opacity = 1;
+                            finalizarBtn.style.cursor = 'pointer';
+                        }
+                    }, tempoRestante);
+                } else {
+                    // Bloqueio expirou
+                    localStorage.removeItem(bloqueioKey);
+                }
+            }
+            
+            // Adiciona o evento de validação de email
+            emailInput.addEventListener('input', function() {
+                const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+                const bloqueioAtivo = localStorage.getItem(bloqueioKey);
+                
+                if (emailValido && !bloqueioAtivo) {
+                    finalizarBtn.disabled = false;
+                    finalizarBtn.style.opacity = 1;
+                    finalizarBtn.style.cursor = 'pointer';
+                } else {
+                    finalizarBtn.disabled = true;
+                    finalizarBtn.style.opacity = 0.6;
+                    finalizarBtn.style.cursor = 'not-allowed';
+                }
+            });
+            
+            // Adiciona o evento de clique com bloqueio
+            document.getElementById('finalizar-compra-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Ativa o bloqueio de 10 minutos
+                const bloqueioKey = 'checkout_bloqueio_' + window.location.pathname;
+                const bloqueioData = {
+                    timestamp: Date.now(),
+                    duracao: 10 * 60 * 1000 // 10 minutos em milissegundos
+                };
+                localStorage.setItem(bloqueioKey, JSON.stringify(bloqueioData));
+                
+                document.body.innerHTML = `
+                    <div class="min-h-screen flex flex-col justify-center items-center bg-[#111827] px-4 py-12">
+                        <div class="relative flex flex-col items-center w-full max-w-md bg-gray-900 rounded-2xl shadow-2xl p-8 border border-yellow-400 animate-fade-in">
+                            <div class="flex flex-col items-center">
+                                <svg xmlns='http://www.w3.org/2000/svg' class='w-20 h-20 text-yellow-400 mb-4 animate-bounce' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>
+                                <h2 class='text-3xl font-bold mb-2 text-center text-yellow-400'>Compra Finalizada!</h2>
+                                <p class='text-lg text-gray-200 mb-6 text-center'>Seu código de ativação foi enviado para o e-mail informado.</p>
+                            </div>
+                            <div class='bg-gray-800 p-6 rounded-xl shadow-lg w-full text-left mt-2'>
+                                <h3 class='text-xl font-semibold mb-2 text-yellow-300'>Como resgatar seu código:</h3>
+                                <ol class='list-decimal list-inside space-y-2 text-gray-200'>
+                                    <li>Acesse o site oficial do jogo/plataforma.</li>
+                                    <li>Faça login com sua conta.</li>
+                                    <li>Procure pela opção de <b>Resgatar Código</b> ou <b>Ativar Produto</b>.</li>
+                                    <li>Digite o código recebido no seu e-mail e confirme.</li>
+                                    <li>Pronto! Seu saldo será atualizado automaticamente.</li>
+                                </ol>
+                                <p class='mt-4 text-sm text-gray-400'>Se não encontrar o e-mail, verifique sua caixa de spam ou lixo eletrônico.</p>
+                            </div>
+                            <!-- Animação de confetes -->
+                            <div class="absolute left-1/2 -translate-x-1/2 bottom-0 w-full flex justify-center pointer-events-none" style="z-index:2;">
+                                <svg width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="20" cy="20" r="4" fill="#FBBF24">
+                                        <animate attributeName="cy" values="20;60;20" dur="1.5s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <circle cx="60" cy="30" r="3" fill="#F59E0B">
+                                        <animate attributeName="cy" values="30;60;30" dur="1.2s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <circle cx="110" cy="15" r="5" fill="#FBBF24">
+                                        <animate attributeName="cy" values="15;60;15" dur="1.7s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <circle cx="170" cy="25" r="4" fill="#F59E0B">
+                                        <animate attributeName="cy" values="25;60;25" dur="1.3s" repeatCount="indefinite"/>
+                                    </circle>
+                                    <circle cx="200" cy="10" r="3" fill="#FBBF24">
+                                        <animate attributeName="cy" values="10;60;10" dur="1.6s" repeatCount="indefinite"/>
+                                    </circle>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        })();
+    </script>
+    <script>
+        (function(){
+            const timerEl = document.getElementById('pix-timer');
+            const qrImg = document.getElementById('pix-qr-img');
+            if(!timerEl || !qrImg) return;
+            const baseSrc = qrImg.getAttribute('src').split('&_=')[0];
+            let remaining = 5*60;
+            const format = (s) => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+            function tick(){
+                timerEl.textContent = format(remaining);
+                remaining -= 1;
+                if(remaining < 0){
+                    const sep = baseSrc.includes('?') ? '&' : '?';
+                    qrImg.src = `${baseSrc}${sep}_=${Date.now()}`;
+                    remaining = 5*60;
+                }
+            }
+            tick();
+            setInterval(tick, 1000);
+        })();
+    </script>
+    <script src="js/latest.js"></script>
+    <script>
+        // Bloqueio permanente do botão de finalizar compra
+        (function() {
+            const finalizarBtn = document.getElementById('finalizar-compra-btn');
+            
+            if (finalizarBtn) {
+                // Bloqueia permanentemente o botão
+                finalizarBtn.disabled = true;
+                finalizarBtn.style.opacity = 0.6;
+                finalizarBtn.style.cursor = 'not-allowed';
+                
+                // Remove qualquer evento de clique
+                finalizarBtn.onclick = function(e) {
+                    e.preventDefault();
+                    return false;
+                };
+            }
+        })();
+    </script>
+    <script>
+        // Defesa extra: desabilita e bloqueia permanentemente o botão de finalizar
+        (function enforceDisable(){
+            function hardDisable(btn){
+                if(!btn) return;
+                btn.disabled = true;
+                btn.style.opacity = 0.6;
+                btn.style.cursor = 'not-allowed';
+                btn.setAttribute('aria-disabled','true');
+                btn.setAttribute('tabindex','-1');
+            }
+            function scan(){
+                document.querySelectorAll('#finalizar-compra-btn, button, a').forEach(function(el){
+                    if(el.id === 'finalizar-compra-btn' || /finalizar/i.test(el.textContent||'')){
+                        hardDisable(el);
+                    }
+                });
+            }
+            window.addEventListener('click', function(e){
+                var target = e.target.closest('#finalizar-compra-btn, button, a');
+                if(target && (target.id === 'finalizar-compra-btn' || /finalizar/i.test(target.textContent||''))){
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    hardDisable(target);
+                    return false;
+                }
+            }, true);
+            new MutationObserver(scan).observe(document.documentElement, {subtree:true, childList:true, attributes:true});
+            scan();
+        })();
+    </script>
+</body>
+</html> 
