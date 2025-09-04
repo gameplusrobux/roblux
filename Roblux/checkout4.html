@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamePlus Robux - Finalizar Compra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .glow-on-hover {
+            transition: all 0.3s ease-in-out;
+        }
+        .glow-on-hover:hover {
+            box-shadow: 0 0 15px 0 rgba(251, 191, 36, 0.6);
+        }
+        .bg-logo-blur {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.13;
+            filter: blur(4px) saturate(1.2);
+            background: none;
+        }
+        .bg-logo-blur img {
+            max-width: 70vw;
+            max-height: 80vh;
+            min-width: 400px;
+            min-height: 300px;
+            object-fit: contain;
+            user-select: none;
+            filter: none !important;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+    
+    <div class="bg-logo-blur">
+        <img src="logo.png" alt="Logo marca d'água">
+    </div>
+
+    <div class="content-wrapper w-full max-w-md bg-gray-800/60 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-gray-700/50 relative">
+        
+        <a href="index.html" class="back-button">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+            </svg>
+            Voltar
+        </a>
+        
+        <!-- Cabeçalho -->
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-yellow-400">GamePlus Robux</h1>
+            <h2 class="text-3xl font-semibold mt-2">Finalize sua Compra</h2>
+            <p class="text-gray-400 mt-1">Estamos quase lá! Siga os passos abaixo.</p>
+        </div>
+
+        <!-- Resumo do Pedido -->
+        <div class="bg-gray-700 rounded-lg p-4 mb-6 flex justify-between items-center">
+            <div>
+                <p class="font-medium">Pacote de 2.000 Robux</p>
+                <p class="text-sm text-gray-400">Entrega via e-mail e ID</p>
+            </div>
+            <div class="text-2xl font-bold text-yellow-400">
+                R$ 64,99
+            </div>
+        </div>
+
+        <!-- Passo 1: Informações -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3 flex items-center">
+                <span class="bg-yellow-400 text-gray-900 rounded-full h-6 w-6 flex items-center justify-center font-bold text-sm mr-2">1</span>
+                Seus Dados
+            </h3>
+            <div class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Seu E-mail para receber o Código</label>
+                    <input type="email" id="email" class="w-full bg-gray-700 border-gray-600 rounded-md p-2.5 text-white focus:ring-yellow-400 focus:border-yellow-400 transition" placeholder="seuemail@email.com">
+                </div>
+                <div>
+                    <label for="playerId" class="block text-sm font-medium text-gray-300 mb-1">ID do Jogador (Nickname/ID)</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" id="playerId" class="w-full bg-gray-700 border-gray-600 rounded-md p-2.5 text-white focus:ring-yellow-400 focus:border-yellow-400 transition" placeholder="Player123 ou ID numérico">
+                        <button onclick="copyPlayerId()" id="copyButton" class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 rounded-md text-sm font-medium transition flex-shrink-0">
+                            Copiar ID
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Passo 2: Pagamento -->
+        <div>
+            <h3 class="text-lg font-semibold mb-3 flex items-center">
+                <span class="bg-yellow-400 text-gray-900 rounded-full h-6 w-6 flex items-center justify-center font-bold text-sm mr-2">2</span>
+                Pagamento via Live Pix
+            </h3>
+            <div class="bg-yellow-900/30 border border-yellow-500 text-yellow-300 text-sm rounded-lg p-3 mb-4">
+                <strong>Atenção:</strong> Após clicar em pagar, você precisa <strong>colar seu ID de Jogador na mensagem do Pix</strong> para a entrega ser validada!
+            </div>
+            
+            <button id="purchaseButton" class="w-full bg-gray-600 text-gray-400 font-bold py-4 px-4 rounded-lg text-center text-lg transition-all duration-300 cursor-not-allowed" disabled>
+                <span class="flex items-center justify-center">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    PREENCHA OS CAMPOS ACIMA
+                </span>
+            </button>
+        </div>
+
+        <div class="text-center mt-6">
+            <p class="text-xs text-gray-500 flex items-center justify-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                Ambiente 100% Seguro
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function copyPlayerId() {
+            const playerIdInput = document.getElementById('playerId');
+            const copyButton = document.getElementById('copyButton');
+
+            if (playerIdInput.value) {
+                navigator.clipboard.writeText(playerIdInput.value).then(() => {
+                    // Feedback para o usuário
+                    copyButton.textContent = 'Copiado!';
+                    copyButton.classList.remove('bg-gray-600', 'hover:bg-gray-500');
+                    copyButton.classList.add('bg-green-500');
+                    
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copiar ID';
+                        copyButton.classList.remove('bg-green-500');
+                        copyButton.classList.add('bg-gray-600', 'hover:bg-gray-500');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Erro ao copiar: ', err);
+                });
+            } else {
+                // Feedback se o campo estiver vazio
+                copyButton.textContent = 'Preencha!';
+                setTimeout(() => {
+                    copyButton.textContent = 'Copiar ID';
+                }, 1500);
+            }
+        }
+
+        // Validação dos campos para ativar o botão
+        function validateFields() {
+            const email = document.getElementById('email').value.trim();
+            const playerId = document.getElementById('playerId').value.trim();
+            const purchaseButton = document.getElementById('purchaseButton');
+            
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            const playerIdValid = playerId.length > 0;
+            
+            if (emailValid && playerIdValid) {
+                // Ativa o botão
+                purchaseButton.disabled = false;
+                purchaseButton.classList.remove('bg-gray-600', 'text-gray-400', 'cursor-not-allowed');
+                purchaseButton.classList.add('bg-yellow-400', 'hover:bg-yellow-500', 'text-gray-900', 'glow-on-hover', 'cursor-pointer');
+                purchaseButton.innerHTML = `
+                    <span class="flex items-center justify-center">
+                        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        PAGAR R$ 64,99 COM LIVE PIX
+                    </span>
+                `;
+                
+                // Adiciona evento de clique para redirecionar
+                purchaseButton.onclick = function() {
+                    window.open('https://livepix.gg/gameplusroblux', '_blank');
+                };
+            } else {
+                // Desativa o botão
+                purchaseButton.disabled = true;
+                purchaseButton.classList.remove('bg-yellow-400', 'hover:bg-yellow-500', 'text-gray-900', 'glow-on-hover', 'cursor-pointer');
+                purchaseButton.classList.add('bg-gray-600', 'text-gray-400', 'cursor-not-allowed');
+                purchaseButton.innerHTML = `
+                    <span class="flex items-center justify-center">
+                        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        PREENCHA OS CAMPOS ACIMA
+                    </span>
+                `;
+                purchaseButton.onclick = null;
+            }
+        }
+
+        // Adiciona listeners para os campos
+        document.getElementById('email').addEventListener('input', validateFields);
+        document.getElementById('playerId').addEventListener('input', validateFields);
+        
+        // Validação inicial
+        validateFields();
+    </script>
+
+</body>
+</html> 
